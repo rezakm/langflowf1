@@ -19,6 +19,7 @@ import { useGetDownloadFolders } from "@/controllers/API/queries/folders/use-get
 import {
   ENABLE_CUSTOM_PARAM,
   ENABLE_FILE_MANAGEMENT,
+  ENABLE_USER_USAGE,
 } from "@/customization/feature-flags";
 import { track } from "@/customization/utils/analytics";
 import { createFileUpload } from "@/helpers/create-file-upload";
@@ -342,6 +343,23 @@ const SideBarFoldersButtonsComponent = ({
   };
 
   const [hoveredFolderId, setHoveredFolderId] = useState<string | null>(null);
+  const [userCredits, setUserCredits] = useState<number | null>(null);
+  
+  useEffect(() => {
+    setUserCredits(1000);
+  }, []);
+
+  const handleCreditsClick = () => {
+    // در اینجا می‌توانید به صفحه جزئیات کردیت هدایت کنید یا یک مودال نمایش دهید
+    setSuccessData({
+      title: "Credits Usage",
+      list: [
+        `Current Credits: ${userCredits || 0}`,
+        "You can purchase more credits in the settings page."
+      ]
+    });
+    track("View Credits Usage");
+  };
 
   return (
     <Sidebar
@@ -445,6 +463,20 @@ const SideBarFoldersButtonsComponent = ({
           </SidebarGroupContent>
         </SidebarGroup>
       </SidebarContent>
+      {ENABLE_USER_USAGE && (
+        <SidebarFooter className="border-t">
+          <div className="flex w-full items-center gap-2 p-2">
+            <SidebarMenuButton
+              size="md"
+              className="text-[13px]"
+              onClick={handleCreditsClick}
+            >
+              <ForwardedIconComponent name="CreditCard" />
+              Credits usage: {userCredits !== null ? userCredits : "Loading..."} credits
+            </SidebarMenuButton>
+          </div>
+        </SidebarFooter>
+      )}
       {ENABLE_FILE_MANAGEMENT && (
         <SidebarFooter className="border-t">
           <div className="flex w-full items-center gap-2 p-2">

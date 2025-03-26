@@ -86,6 +86,7 @@ export default function AppHeader(): JSX.Element {
         className={`z-30 flex items-center gap-2`}
         data-testid="header_right_section_wrapper"
       >
+        {/*}
         {!ENABLE_DATASTAX_LANGFLOW && (
           <>
             <Button
@@ -99,6 +100,7 @@ export default function AppHeader(): JSX.Element {
             </Button>
           </>
         )}
+        */}
         <AlertDropdown
           notificationRef={notificationContentRef}
           onClose={() => setActiveState(null)}
@@ -136,6 +138,7 @@ export default function AppHeader(): JSX.Element {
             </AlertDropdown>
           </ShadTooltip>
         </AlertDropdown>
+        {/*}
         {!ENABLE_DATASTAX_LANGFLOW && (
           <>
             <ShadTooltip
@@ -164,6 +167,7 @@ export default function AppHeader(): JSX.Element {
             />
           </>
         )}
+        */}
         {ENABLE_DATASTAX_LANGFLOW && (
           <>
             <ShadTooltip content="Docs" side="bottom" styleClasses="z-10">

@@ -374,7 +374,7 @@ export default function IOModal({
                 <ShadTooltip
                   styleClasses="z-50"
                   side="right"
-                  content="Built with Langflow"
+                  content="Built with Deeptern"
                 >
                   <Button
                     variant="primary"

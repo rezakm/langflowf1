@@ -210,7 +210,7 @@ export default function ChatInput({
             <a
               className="underline underline-offset-4"
               target="_blank"
-              href="https://docs.langflow.org/components-io#chat-input"
+              href="https://docs.deeptern.org/components-io#chat-input"
             >
               Chat Input
             </a>{" "}

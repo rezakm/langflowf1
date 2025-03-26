@@ -23,14 +23,29 @@ export const ForwardedIconComponent = memo(
       ref,
     ) => {
       const [showFallback, setShowFallback] = useState(false);
+      const [userCredits, setUserCredits] = useState<number | null>(null);
 
       useEffect(() => {
         const timer = setTimeout(() => {
           setShowFallback(true);
         }, 30);
 
+        setUserCredits(1000);
+
         return () => clearTimeout(timer);
       }, []);
+
+      const handleCreditsClick = () => {
+        // Here you can go to the details page or give a demonstration.
+        setSuccessData({
+          title: "Credits Usage",
+          list: [
+            `Current Credits: ${userCredits || 0}`,
+            "You can purchase more credits in the settings page."
+          ]
+        });
+        track("View Credits Usage");
+      };
 
       let TargetIcon =
         nodeIconsLucide[name] ||

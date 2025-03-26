@@ -59,7 +59,7 @@ export function SaveChangesModal({
             <a
               target="_blank"
               className="underline"
-              href="https://docs.langflow.org/configuration-auto-save"
+              href="https://docs.deeptern.org/configuration-auto-save"
             >
               Enable auto-saving
             </a>{" "}
