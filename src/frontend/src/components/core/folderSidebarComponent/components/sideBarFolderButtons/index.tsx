@@ -40,6 +40,8 @@ import { SidebarFolderSkeleton } from "../sidebarFolderSkeleton";
 import { HeaderButtons } from "./components/header-buttons";
 import { InputEditFolderName } from "./components/input-edit-folder-name";
 import { SelectOptions } from "./components/select-options";
+import { useGetUserCredits } from "@/controllers/API/queries/credits";
+import { useUserStore } from "@/stores/userStore";
 
 type SideBarFoldersButtonsComponentProps = {
   handleChangeFolder?: (id: string) => void;
@@ -56,7 +58,9 @@ const SideBarFoldersButtonsComponent = ({
   const folders = useFolderStore((state) => state.folders);
   const loading = !folders;
   const refInput = useRef<HTMLInputElement>(null);
-
+  const userId = useUserStore((state) => state.user?.id);
+  const { data: userCreditsInfo, isLoading: isLoadingCredits } = useGetUserCredits();
+  
   const currentFolder = pathname.split("/");
   const urlWithoutPath =
     pathname.split("/").length < (ENABLE_CUSTOM_PARAM ? 5 : 4);
@@ -343,22 +347,18 @@ const SideBarFoldersButtonsComponent = ({
   };
 
   const [hoveredFolderId, setHoveredFolderId] = useState<string | null>(null);
-  const [userCredits, setUserCredits] = useState<number | null>(null);
   
-  useEffect(() => {
-    setUserCredits(1000);
-  }, []);
-
   const handleCreditsClick = () => {
     // در اینجا می‌توانید به صفحه جزئیات کردیت هدایت کنید یا یک مودال نمایش دهید
     setSuccessData({
       title: "Credits Usage",
       list: [
-        `Current Credits: ${userCredits || 0}`,
+        `Current Credits: ${userCreditsInfo?.currentBalance || 0}`,
+        `Total Credits Used: ${userCreditsInfo?.totalCreditsUsed || 0}`,
         "You can purchase more credits in the settings page."
       ]
     });
-    track("View Credits Usage");
+    track("View Credits Usage", { viewedCredits: true });
   };
 
   return (
@@ -472,7 +472,7 @@ const SideBarFoldersButtonsComponent = ({
               onClick={handleCreditsClick}
             >
               <ForwardedIconComponent name="CreditCard" />
-              Credits usage: {userCredits !== null ? userCredits : "Loading..."} credits
+              Credits usage: {isLoadingCredits ? "Loading..." : `${userCreditsInfo?.currentBalance || 0} credits`}
             </SidebarMenuButton>
           </div>
         </SidebarFooter>

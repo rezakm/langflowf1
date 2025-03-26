@@ -1,5 +1,6 @@
 import { CustomLink } from "@/customization/components/custom-link";
 import { useIsMobile } from "@/hooks/use-mobile";
+import { useGetUserCredits } from "@/controllers/API/queries/credits";
 import { useLocation } from "react-router-dom";
 import {
   Sidebar,
@@ -9,7 +10,9 @@ import {
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
+  SidebarFooter,
 } from "../../ui/sidebar";
+import ForwardedIconComponent from "@/components/common/genericIconComponent";
 
 type SideBarButtonsComponentProps = {
   items: {
@@ -23,7 +26,7 @@ type SideBarButtonsComponentProps = {
 const SideBarButtonsComponent = ({ items }: SideBarButtonsComponentProps) => {
   const location = useLocation();
   const pathname = location.pathname;
-
+  const { data: userCredits } = useGetUserCredits();
   const isMobile = useIsMobile();
 
   return (
@@ -55,6 +58,19 @@ const SideBarButtonsComponent = ({ items }: SideBarButtonsComponentProps) => {
           </SidebarGroupContent>
         </SidebarGroup>
       </SidebarContent>
+      
+      {userCredits && (
+        <SidebarFooter className="border-t p-3">
+          <div className="flex items-center gap-2 text-sm text-muted-foreground">
+            <ForwardedIconComponent
+              name="CreditCard"
+              className="h-4 w-4 text-primary"
+            />
+            <span className="font-medium">{userCredits.currentBalance}</span>
+            <span>کردیت</span>
+          </div>
+        </SidebarFooter>
+      )}
     </Sidebar>
   );
 };

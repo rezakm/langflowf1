@@ -33,6 +33,7 @@ import GlobalVariablesPage from "./pages/SettingsPage/pages/GlobalVariablesPage"
 import MessagesPage from "./pages/SettingsPage/pages/messagesPage";
 import ShortcutsPage from "./pages/SettingsPage/pages/ShortcutsPage";
 import StoreApiKeyPage from "./pages/SettingsPage/pages/StoreApiKeyPage";
+import CreditsPage from "./pages/SettingsPage/pages/CreditsPage";
 import StorePage from "./pages/StorePage";
 import ViewPage from "./pages/ViewPage";
 
@@ -132,6 +133,7 @@ const router = createBrowserRouter(
                   <Route path="shortcuts" element={<ShortcutsPage />} />
                   <Route path="messages" element={<MessagesPage />} />
                   <Route path="store" element={<StoreApiKeyPage />} />
+                  <Route path="credits" element={<CreditsPage />} />
                 </Route>
                 <Route
                   path="store"
