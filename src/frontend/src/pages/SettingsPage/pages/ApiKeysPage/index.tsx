@@ -1,109 +1,32 @@
-import {
-  DEL_KEY_ERROR_ALERT,
-  DEL_KEY_ERROR_ALERT_PLURAL,
-  DEL_KEY_SUCCESS_ALERT,
-  DEL_KEY_SUCCESS_ALERT_PLURAL,
-} from "@/constants/alerts_constants";
-import {
-  IApiKeysDataArray,
-  useDeleteApiKey,
-  useGetApiKeysQuery,
-} from "@/controllers/API/queries/api-keys";
-import { SelectionChangedEvent } from "ag-grid-community";
-import { useContext, useEffect, useState } from "react";
-import TableComponent from "../../../../components/core/parameterRenderComponent/components/tableComponent";
-import { AuthContext } from "../../../../contexts/authContext";
-import useAlertStore from "../../../../stores/alertStore";
-import ApiKeyHeaderComponent from "./components/ApiKeyHeader";
-import { getColumnDefs } from "./helpers/column-defs";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import ForwardedIconComponent from "@/components/common/genericIconComponent";
+
+export const ApiKeysPageHeader = () => {
+  return (
+    <div className="flex w-full items-center justify-between pb-6">
+      <div className="flex flex-col gap-2">
+        <h1 className="text-2xl font-semibold">API Keys</h1>
+        <p className="text-muted-foreground text-sm">
+          Manage API keys for accessing services
+        </p>
+      </div>
+      <ForwardedIconComponent name="Key" className="h-6 w-6" />
+    </div>
+  );
+};
 
 export default function ApiKeysPage() {
-  const [selectedRows, setSelectedRows] = useState<string[]>([]);
-  const setSuccessData = useAlertStore((state) => state.setSuccessData);
-  const setErrorData = useAlertStore((state) => state.setErrorData);
-  const { userData } = useContext(AuthContext);
-  const [userId, setUserId] = useState("");
-  const [keysList, setKeysList] = useState<IApiKeysDataArray[]>([]);
-  const { refetch } = useGetApiKeysQuery();
-
-  async function getApiKeysQuery() {
-    const { data } = await refetch();
-    if (data !== undefined) {
-      const updatedKeysList = data["api_keys"].map((apikey) => ({
-        ...apikey,
-        name: apikey.name && apikey.name !== "" ? apikey.name : "Untitled",
-        last_used_at: apikey.last_used_at ?? "Never",
-      }));
-      setKeysList(updatedKeysList);
-      setUserId(data["user_id"]);
-    }
-  }
-
-  useEffect(() => {
-    if (userData) {
-      getApiKeysQuery();
-    }
-  }, [userData]);
-
-  function resetFilter() {
-    getApiKeysQuery();
-  }
-
-  const { mutate } = useDeleteApiKey();
-
-  function handleDeleteApi() {
-    for (let i = 0; i < selectedRows.length; i++) {
-      mutate(
-        { keyId: selectedRows[i] },
-        {
-          onSuccess: () => {
-            resetFilter();
-            setSuccessData({
-              title:
-                selectedRows.length === 1
-                  ? DEL_KEY_SUCCESS_ALERT
-                  : DEL_KEY_SUCCESS_ALERT_PLURAL,
-            });
-          },
-          onError: (error) => {
-            setErrorData({
-              title:
-                selectedRows.length === 1
-                  ? DEL_KEY_ERROR_ALERT
-                  : DEL_KEY_ERROR_ALERT_PLURAL,
-              list: [error?.response?.data?.detail],
-            });
-          },
-        },
-      );
-    }
-  }
-
-  const columnDefs = getColumnDefs();
-
   return (
-    <div className="flex h-full w-full flex-col justify-between gap-6">
-      <ApiKeyHeaderComponent
-        selectedRows={selectedRows}
-        fetchApiKeys={getApiKeysQuery}
-        userId={userId}
-      />
-
-      <div className="flex h-full w-full flex-col justify-between">
-        <TableComponent
-          key={"apiKeys"}
-          onDelete={handleDeleteApi}
-          overlayNoRowsTemplate="No data available"
-          onSelectionChanged={(event: SelectionChangedEvent) => {
-            setSelectedRows(event.api.getSelectedRows().map((row) => row.id));
-          }}
-          rowSelection="multiple"
-          suppressRowClickSelection={true}
-          pagination={true}
-          columnDefs={columnDefs}
-          rowData={keysList}
-        />
-      </div>
+    <div className="flex h-full flex-col gap-6 overflow-auto p-6">
+      <ApiKeysPageHeader />
+      <Card>
+        <CardHeader>
+          <CardTitle>API Keys</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <p>API Keys management will be implemented here</p>
+        </CardContent>
+      </Card>
     </div>
   );
 }

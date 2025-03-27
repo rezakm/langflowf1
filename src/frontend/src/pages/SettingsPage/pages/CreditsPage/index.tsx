@@ -17,7 +17,7 @@ export const CreditsPageHeader = () => {
           Manage your account credits and usage
         </p>
       </div>
-      <ForwardedIconComponent name="CreditCard" className="h-6 w-6" />
+      <ForwardedIconComponent name="Coins" className="h-6 w-6" />
     </div>
   );
 };
@@ -29,8 +29,8 @@ export default function CreditsPage() {
   const setSuccessData = useAlertStore((state) => state.setSuccessData);
 
   const handlePurchaseCredits = () => {
-    // در اینجا می‌توانید منطق خرید کردیت را پیاده‌سازی کنید
-    // برای مثال، یک API را صدا بزنید یا به یک درگاه پرداخت هدایت کنید
+    // Here you can implement credit purchase logic
+    // For example, call an API or redirect to a payment gateway
     setSuccessData({
       title: "Purchase Requested",
       list: [
@@ -62,7 +62,7 @@ export default function CreditsPage() {
           </CardHeader>
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-4">
-              <ForwardedIconComponent name="Wallet" className="h-8 w-8 text-primary" />
+              <ForwardedIconComponent name="Coins" className="h-8 w-8 text-primary" />
               <div className="text-3xl font-bold">
                 {userCreditsInfo?.currentBalance || 0}
               </div>

@@ -3,8 +3,8 @@ import { getUserCreditsInfo, updateUserCreditsBalance, applyCredits, UserCreditI
 import { useUserStore } from "@/stores/userStore";
 
 /**
- * هوک برای دریافت اطلاعات کردیت کاربر
- * @returns اطلاعات کردیت کاربر فعلی
+ * Hook to get user credit info
+ * @returns current user credit info
  */
 export const useGetUserCredits = () => {
   const userId = useUserStore((state) => state.user?.id);
@@ -17,7 +17,7 @@ export const useGetUserCredits = () => {
 };
 
 /**
- * هوک برای به‌روزرسانی موجودی کردیت کاربر
+ Hook to update user credit balance
  */
 export const useUpdateUserCredits = () => {
   return useMutation<UserCreditInfo, Error, { userId: string; newBalance: number }>({
@@ -26,7 +26,7 @@ export const useUpdateUserCredits = () => {
 };
 
 /**
- * هوک برای اعمال کسر کردیت از حساب کاربر
+Hook to apply credit deduction to user account
  */
 export const useApplyCredits = () => {
   return useMutation<

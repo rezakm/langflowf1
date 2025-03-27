@@ -17,15 +17,15 @@ async def get_user_credits_info(
     current_user: Dict[str, Any] = Depends(get_current_user),
 ) -> UserCreditInfo:
     """
-    دریافت اطلاعات کردیت کاربر
+    Get user credit information
     """
-    # اطمینان از دسترسی کاربر به اطلاعات
+    # Ensure user has access to this information
     if current_user["id"] != user_id and not current_user.get("is_admin", False):
         raise HTTPException(
-            status_code=403, detail="شما مجاز به دسترسی به این اطلاعات نیستید"
+            status_code=403, detail="You are not authorized to access this information"
         )
 
-    # اجرای کوئری برای محاسبه کل کردیت مصرفی
+    # Get transaction history for total used credits
     query = text("""
         SELECT 
             SUM(t.consumed_credits) AS total_credits_used
@@ -44,11 +44,11 @@ async def get_user_credits_info(
     
     total_credits_used = row[0] if row else 0
     
-    # دریافت اطلاعات موجودی کردیت کاربر
+    # Get user's current credit balance from user table
     balance_query = text("""
-        SELECT current_balance
-        FROM "user_credit_balance"
-        WHERE user_id = :user_id
+        SELECT credits_balance
+        FROM "user"
+        WHERE id = :user_id
     """)
     
     balance_result = await session.execute(balance_query, {"user_id": user_id})
@@ -71,26 +71,25 @@ async def update_user_credits_balance(
     current_user: Dict[str, Any] = Depends(get_current_user),
 ) -> UserCreditInfo:
     """
-    به‌روزرسانی موجودی کردیت کاربر
+    Update user credit balance
     """
-    # فقط ادمین‌ها می‌توانند موجودی کردیت کاربران را تغییر دهند
+    # Only admins can change credit balance
     if not current_user.get("is_admin", False):
         raise HTTPException(
-            status_code=403, detail="شما مجاز به تغییر موجودی کردیت نیستید"
+            status_code=403, detail="You are not authorized to update credit balance"
         )
     
-    # به‌روزرسانی موجودی کردیت
+    # Update credit balance directly in user table
     update_query = text("""
-        INSERT INTO "user_credit_balance" (user_id, current_balance)
-        VALUES (:user_id, :new_balance)
-        ON CONFLICT (user_id) DO UPDATE
-        SET current_balance = :new_balance
+        UPDATE "user"
+        SET credits_balance = :new_balance
+        WHERE id = :user_id
     """)
     
     await session.execute(update_query, {"user_id": user_id, "new_balance": new_balance})
     await session.commit()
     
-    # دریافت اطلاعات به‌روز شده
+    # Get updated information
     return await get_user_credits_info(user_id, session, current_user)
 
 
@@ -101,48 +100,62 @@ async def apply_credits_endpoint(
     current_user: Dict[str, Any] = Depends(get_current_user),
 ) -> ApplyCreditResponse:
     """
-    اعمال کسر کردیت از حساب کاربر برای یک فعالیت
+    Apply credit deduction for user activity
     """
     user_id = request.userId
     consumed_credits = request.consumedCredits
     
-    # اطمینان از دسترسی کاربر
+    # Ensure user has access
     if current_user["id"] != user_id and not current_user.get("is_admin", False):
         raise HTTPException(
-            status_code=403, detail="شما مجاز به اعمال کردیت برای این کاربر نیستید"
+            status_code=403, detail="You are not authorized to apply credits for this user"
         )
     
-    # دریافت موجودی کردیت کاربر
+    # Get user's current credit balance
     balance_query = text("""
-        SELECT current_balance
-        FROM "user_credit_balance"
-        WHERE user_id = :user_id
+        SELECT credits_balance
+        FROM "user"
+        WHERE id = :user_id
     """)
     
     balance_result = await session.execute(balance_query, {"user_id": user_id})
     balance_row = balance_result.fetchone()
     
+    if not balance_row:
+        raise HTTPException(status_code=404, detail="User not found")
+    
     current_balance = balance_row[0] if balance_row else 0
     
-    # اعمال منطق کسر کردیت
+    # Apply credit deduction logic
     if current_balance >= consumed_credits:
         new_balance = current_balance - consumed_credits
         extra_charge = 0
+        
+        # Update user's credit balance
+        update_query = text("""
+            UPDATE "user" 
+            SET credits_balance = credits_balance - :consumed_credits
+            WHERE id = :user_id AND credits_balance >= :consumed_credits
+        """)
+        
+        await session.execute(update_query, {
+            "user_id": user_id,
+            "consumed_credits": consumed_credits
+        })
     else:
         extra_charge = consumed_credits - current_balance
         new_balance = 0
+        
+        # Set balance to zero if not enough credits
+        update_query = text("""
+            UPDATE "user" 
+            SET credits_balance = 0
+            WHERE id = :user_id
+        """)
+        
+        await session.execute(update_query, {"user_id": user_id})
     
-    # به‌روزرسانی موجودی کردیت
-    update_query = text("""
-        INSERT INTO "user_credit_balance" (user_id, current_balance)
-        VALUES (:user_id, :new_balance)
-        ON CONFLICT (user_id) DO UPDATE
-        SET current_balance = :new_balance
-    """)
-    
-    await session.execute(update_query, {"user_id": user_id, "new_balance": new_balance})
-    
-    # ثبت تراکنش
+    # Log the transaction
     transaction_query = text("""
         INSERT INTO "credit_transaction" (user_id, consumed_credits, extra_charge, new_balance, transaction_date)
         VALUES (:user_id, :consumed_credits, :extra_charge, :new_balance, NOW())

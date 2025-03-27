@@ -61,14 +61,20 @@ const SideBarButtonsComponent = ({ items }: SideBarButtonsComponentProps) => {
       
       {userCredits && (
         <SidebarFooter className="border-t p-3">
-          <div className="flex items-center gap-2 text-sm text-muted-foreground">
-            <ForwardedIconComponent
-              name="CreditCard"
-              className="h-4 w-4 text-primary"
-            />
-            <span className="font-medium">{userCredits.currentBalance}</span>
-            <span>کردیت</span>
-          </div>
+          <CustomLink to="/settings/credits">
+            <div className="flex flex-col gap-1 text-sm text-muted-foreground hover:text-primary cursor-pointer">
+              <div className="flex items-center gap-2">
+                <ForwardedIconComponent
+                  name="Coins"
+                  className="h-4 w-4 text-primary"
+                />
+                <span className="font-medium">Balance: {userCredits.currentBalance}</span>
+              </div>
+              <div className="flex items-center gap-2 pl-6">
+                <span className="text-xs">Used: {userCredits.totalCreditsUsed || 0}</span>
+              </div>
+            </div>
+          </CustomLink>
         </SidebarFooter>
       )}
     </Sidebar>

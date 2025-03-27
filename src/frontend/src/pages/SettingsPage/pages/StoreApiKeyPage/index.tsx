@@ -1,3 +1,4 @@
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import ForwardedIconComponent from "@/components/common/genericIconComponent";
 import { CONTROL_PATCH_USER_STATE } from "@/constants/constants";
 import { AuthContext } from "@/contexts/authContext";
@@ -10,7 +11,21 @@ import { useParams } from "react-router-dom";
 import useScrollToElement from "../hooks/use-scroll-to-element";
 import StoreApiKeyFormComponent from "./components/StoreApiKeyForm";
 
-const StoreApiKeyPage = () => {
+export const StoreApiKeyPageHeader = () => {
+  return (
+    <div className="flex w-full items-center justify-between pb-6">
+      <div className="flex flex-col gap-2">
+        <h1 className="text-2xl font-semibold">Store API Keys</h1>
+        <p className="text-muted-foreground text-sm">
+          Manage API keys for the Deeptern Store
+        </p>
+      </div>
+      <ForwardedIconComponent name="Store" className="h-6 w-6" />
+    </div>
+  );
+};
+
+export default function StoreApiKeyPage() {
   const { scrollId } = useParams();
   const [inputState, setInputState] = useState(CONTROL_PATCH_USER_STATE);
   const { storeApiKey } = useContext(AuthContext);
@@ -58,31 +73,23 @@ const StoreApiKeyPage = () => {
   };
 
   return (
-    <div className="flex h-full w-full flex-col gap-6">
-      <div className="flex w-full items-start gap-6">
-        <div className="flex w-full flex-col">
-          <h2 className="flex items-center text-lg font-semibold tracking-tight">
-            Deeptern Store
-            <ForwardedIconComponent
-              name="Store"
-              className="ml-2 h-5 w-5 text-primary"
-            />
-          </h2>
-          <p className="text-sm text-muted-foreground">
-            Manage access to the Deeptern Store.
-          </p>
-        </div>
-      </div>
-      <StoreApiKeyFormComponent
-        apikey={inputState.apikey}
-        handleInput={handleInput}
-        handleSaveKey={handleSaveKey}
-        loadingApiKey={loadingApiKey}
-        validApiKey={validApiKey}
-        hasApiKey={hasApiKey}
-      />
+    <div className="flex h-full flex-col gap-6 overflow-auto p-6">
+      <StoreApiKeyPageHeader />
+      <Card>
+        <CardHeader>
+          <CardTitle>Store API Key Settings</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <StoreApiKeyFormComponent
+            apikey={inputState.apikey}
+            handleInput={handleInput}
+            handleSaveKey={handleSaveKey}
+            loadingApiKey={loadingApiKey}
+            validApiKey={validApiKey}
+            hasApiKey={hasApiKey}
+          />
+        </CardContent>
+      </Card>
     </div>
   );
-};
-
-export default StoreApiKeyPage;
+}

@@ -6,18 +6,29 @@ import {
 } from "@/customization/feature-flags";
 import useAuthStore from "@/stores/authStore";
 import { useStoreStore } from "@/stores/storeStore";
-import { Outlet } from "react-router-dom";
+import { Outlet, useLocation } from "react-router-dom";
 import ForwardedIconComponent from "../../components/common/genericIconComponent";
 import PageLayout from "../../components/common/pageLayout";
 import CreditsPage from "./pages/CreditsPage";
+import GeneralPage from "./pages/GeneralPage";
+import ApiKeysPage from "./pages/ApiKeysPage";
+import GlobalVariablesPage from "./pages/GlobalVariablesPage";
+import MessagesPage from "./pages/messagesPage";
+import ShortcutsPage from "./pages/ShortcutsPage";
+import StoreApiKeyPage from "./pages/StoreApiKeyPage";
 import { useParams } from "react-router-dom";
 import { useMemo } from "react";
 
 export default function SettingsPage(): JSX.Element {
   const autoLogin = useAuthStore((state) => state.autoLogin);
   const hasStore = useStoreStore((state) => state.hasStore);
-  const params = useParams();
-  const page = params.page ?? "general";
+  const location = useLocation();
+  const pathname = location.pathname;
+  
+  // Use pathname to determine the current page
+  const currentPage = pathname.split("/").pop();
+  // Fallback to general if we can't determine the page
+  const page = currentPage || "general";
 
   // Hides the General settings if there is nothing to show
   const showGeneralSettings = ENABLE_PROFILE_ICONS || hasStore || !autoLogin;
@@ -93,6 +104,16 @@ export default function SettingsPage(): JSX.Element {
         icon: (
           <ForwardedIconComponent
             name="Store"
+            className="w-4 flex-shrink-0 justify-start stroke-[1.5]"
+          />
+        ),
+      },
+      {
+        title: "Credits",
+        href: "/settings/credits",
+        icon: (
+          <ForwardedIconComponent
+            name="CreditCard"
             className="w-4 flex-shrink-0 justify-start stroke-[1.5]"
           />
         ),

@@ -349,15 +349,8 @@ const SideBarFoldersButtonsComponent = ({
   const [hoveredFolderId, setHoveredFolderId] = useState<string | null>(null);
   
   const handleCreditsClick = () => {
-    // در اینجا می‌توانید به صفحه جزئیات کردیت هدایت کنید یا یک مودال نمایش دهید
-    setSuccessData({
-      title: "Credits Usage",
-      list: [
-        `Current Credits: ${userCreditsInfo?.currentBalance || 0}`,
-        `Total Credits Used: ${userCreditsInfo?.totalCreditsUsed || 0}`,
-        "You can purchase more credits in the settings page."
-      ]
-    });
+    // Redirect user to credit management page
+    window.location.href = "/settings/credits";
     track("View Credits Usage", { viewedCredits: true });
   };
 
@@ -465,14 +458,17 @@ const SideBarFoldersButtonsComponent = ({
       </SidebarContent>
       {ENABLE_USER_USAGE && (
         <SidebarFooter className="border-t">
-          <div className="flex w-full items-center gap-2 p-2">
+          <div className="flex w-full flex-col gap-1 p-2">
             <SidebarMenuButton
               size="md"
               className="text-[13px]"
               onClick={handleCreditsClick}
             >
-              <ForwardedIconComponent name="CreditCard" />
-              Credits usage: {isLoadingCredits ? "Loading..." : `${userCreditsInfo?.currentBalance || 0} credits`}
+              <ForwardedIconComponent name="Coins" />
+              <div className="flex flex-col text-left">
+                <span>Credits balance: {isLoadingCredits ? "Loading..." : `${userCreditsInfo?.currentBalance || 0}`}</span>
+                <span className="text-xs text-muted-foreground">Used: {isLoadingCredits ? "Loading..." : `${userCreditsInfo?.totalCreditsUsed || 0}`}</span>
+              </div>
             </SidebarMenuButton>
           </div>
         </SidebarFooter>
