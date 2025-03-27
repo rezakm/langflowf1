@@ -52,7 +52,7 @@ python -m langflow api-key [OPTIONS]
 ### langflow copy-db
 
 Copy the database files to the current directory.
-Copy the Langflow database files, `langflow.db` and `langflow-pre.db` (if they exist), from the cache directory to the current directory.
+Copy the Langflow database files, `database.db` and `langflow-pre.db` (if they exist), from the cache directory to the current directory.
 
 :::note
 The current directory is the directory containing `__main__.py`.

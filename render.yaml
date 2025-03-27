@@ -11,7 +11,7 @@ services:
     autoDeploy: false
     envVars:
       - key: LANGFLOW_DATABASE_URL
-        value: sqlite:////app/data/.cache/langflow/langflow.db
+        value: sqlite:////app/data/.cache/langflow/database.db
       - key: LANGFLOW_HOST
         value: 0.0.0.0
       - key: LANGFLOW_PORT

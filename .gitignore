@@ -250,7 +250,7 @@ dmypy.json
 
 # Poetry
 .testenv/*
-langflow.db
+database.db
 
 
 .githooks/prepare-commit-msg

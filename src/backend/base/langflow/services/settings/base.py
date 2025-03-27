@@ -309,7 +309,7 @@ class Settings(BaseSettings):
             logger.debug("Using LANGFLOW_DATABASE_URL env variable.")
         else:
             logger.debug("No database_url env variable, using sqlite database")
-            # Originally, we used sqlite:///./langflow.db
+            # Originally, we used sqlite:///./database.db
             # so we need to migrate to the new format
             # if there is a database in that location
             if not info.data["config_dir"]:
@@ -330,7 +330,7 @@ class Settings(BaseSettings):
                 logger.debug(f"Saving database to langflow directory: {database_dir}")
 
             pre_db_file_name = "langflow-pre.db"
-            db_file_name = "langflow.db"
+            db_file_name = "database.db"
             new_pre_path = f"{database_dir}/{pre_db_file_name}"
             new_path = f"{database_dir}/{db_file_name}"
             final_path = None

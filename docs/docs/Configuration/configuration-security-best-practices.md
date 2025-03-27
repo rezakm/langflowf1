@@ -43,5 +43,5 @@ The secret key is critical for encrypting sensitive data in Langflow. Follow the
    ```
 
 - Use the default database locations:
-   - macOS/Linux: `PYTHON_LOCATION/site-packages/langflow/langflow.db`
-   - Windows: `PYTHON_LOCATION\Lib\site-packages\langflow\langflow.db`
+   - macOS/Linux: `PYTHON_LOCATION/site-packages/langflow/database.db`
+   - Windows: `PYTHON_LOCATION\Lib\site-packages\langflow\database.db`

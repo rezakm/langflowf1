@@ -489,7 +489,7 @@ def superuser(
 def copy_db() -> None:
     """Copy the database files to the current directory.
 
-    This function copies the 'langflow.db' and 'langflow-pre.db' files from the cache directory to the current
+    This function copies the 'database.db' and 'langflow-pre.db' files from the cache directory to the current
     directory.
     If the files exist in the cache directory, they will be copied to the same directory as this script (__main__.py).
 
@@ -501,7 +501,7 @@ def copy_db() -> None:
     from platformdirs import user_cache_dir
 
     cache_dir = Path(user_cache_dir("langflow"))
-    db_path = cache_dir / "langflow.db"
+    db_path = cache_dir / "database.db"
     pre_db_path = cache_dir / "langflow-pre.db"
     # It should be copied to the current directory
     # this file is __main__.py and it should be in the same directory as the database
